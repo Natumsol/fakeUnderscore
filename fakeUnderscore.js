@@ -82,7 +82,7 @@
          * [isObject description]
          * @return {Boolean} [description]
          */
-    _.isObject = function() {
+    _.isObject = function(obj) {
             var type = typeof obj;
             return type == 'function' || type === 'object' && !!obj;
         }
@@ -374,9 +374,39 @@
         var args = slice.call(arguments, 2);
         var isFunc = _.isFunction(method);
         return _.map(obj, function(value) {
-            
-        }) 
+            return (isFunc ? method : value[method]).apply(value, args);
+        });
+    };
+
+    _.pluck = function(obj, key) {
+        return _.map(obj, _.property(key));
     }
 
+    _.where = function(obj, attrs) {
+        return _.find(obj, _.mathes(attrs));
+    }
+
+    _.matches = function(attrs) {
+        var paris = _.pairs(attrs), length = pairs.length;
+        return function(obj) {
+            if(obj == null) return !length;
+            obj = new Object(obj);
+            for (var i = 0; i < length; i ++) {
+                var pair = paris[i], key = pair[0];
+                if (pair[1] !== obj[key] || !(key in obj)) return false;
+            }
+            return true;
+        }
+    }
+
+    _.pairs = function(obj) {
+        var keys = _.keys(obj);
+        var length = keys.length;
+        var pairs = Array(length);
+        for (var i = 0; i < length; i ++) {
+            pairs[i] = [keys[i], obj[keys[i]]];
+        }
+        return pairs;
+    }
 
 }.call(this));
