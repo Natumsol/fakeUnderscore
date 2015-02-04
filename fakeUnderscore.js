@@ -365,7 +365,29 @@
         return result;
     };
 
-    
+    _.sample = function(obj, n, guard) {
+        if (n == null || guard) {
+            obj = obj.length == +obj.length ? obj : _.values(obj);
+            return obj[_.random(obj.length - 1)];
+        }
+        return _.shuffle(obj).slice(0, Math.max(0, n));
+    }//随机返回一个集合里面的n个值
+
+    _.random = function(min, max) {
+        if(max == null) {
+            max = min;
+            min = 0;
+        }
+        return min + Math.floor(Math.random() * (max - min + 1));
+    }
+
+    _.shuffle = function(obj) {
+        
+    }
+
+
+
+
 
 
 
