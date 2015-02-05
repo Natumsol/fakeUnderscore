@@ -11,7 +11,7 @@
         slice = ArrayProto.slice,
         concat = ArrayProto.concat,
         toString = ArrayProto.toString,
-        hasOwnPropersity = ArrayProto.hasOwnPropersity;
+        hasOwnProperty = ArrayProto.hasOwnProperty;
     var
         nativeIsArray = Array.isArray,
         nativeKeys = Object.keys,
@@ -84,7 +84,7 @@
     };
 
     _.has = function(obj, key) {
-        return obj != null && hasOwnPropersity.call(obj, key);
+        return obj != null && hasOwnPropertyhasOwnProperty.call(obj, key);
     }
 
     _.keys = function(obj) {
@@ -309,25 +309,26 @@
     }
 
     _.where = function(obj, attrs) {
-        return _.filter(obj, _.matches(attrs));
-    }// 返回只包含attrs键值对的对象
+            return _.filter(obj, _.matches(attrs));
+        } // 返回只包含attrs键值对的对象
 
-    _.findWhere= function(obj, attrs) {
+    _.findWhere = function(obj, attrs) {
         return _.find(obj, _.matches(attrs));
     }
 
     _.max = function(obj, iteratee, context) {
-        var result = -Infinity, lastComputed = -Infinity,
+        var result = -Infinity,
+            lastComputed = -Infinity,
             value, computed;
-        if(iteratee == null && obj != null) {//没有遍历函数
+        if (iteratee == null && obj != null) { //没有遍历函数
             obj = obj.length === +obj.length ? obj : _.values(obj);
-            for(var i = 0, length = obj.length; i < length; i++) {
+            for (var i = 0, length = obj.length; i < length; i++) {
                 value = obj[i];
                 if (value > result) {
                     result = value;
                 }
             }
-        } else {//存在遍历函数,返回使遍历函数最大的obj里面的值，也就是说返回是iteratee函数最大的变量obj[index]
+        } else { //存在遍历函数,返回使遍历函数最大的obj里面的值，也就是说返回是iteratee函数最大的变量obj[index]
             iteratee = _.iteratee(iteratee, context);
             _.each(obj, function(value, index, list) {
                 computed = iteratee(value, index, list);
@@ -337,18 +338,19 @@
                 }
             });
         }
-       
+
         return result;
     }
 
     _.min = function(obj, iteratee, context) {
-        var result = Infinity, lastComputed = Infinity,
+        var result = Infinity,
+            lastComputed = Infinity,
             value, computed;
-        if(iteratee == null && obj != null) {
+        if (iteratee == null && obj != null) {
             obj = obj.length === +obj.length ? obj : _.values(obj);
-            for(var i = 0, i < obj.length; i ++) {
+            for (var i = 0; i < obj.length; i++) {
                 value = obj[i];
-                if(value < result) {
+                if (value < result) {
                     result = value;
                 }
             }
@@ -356,7 +358,7 @@
             iteratee = _.iteratee(iteratee, context);
             _.each(obj, function(value, index, list) {
                 computed = iteratee(value, index, list);
-                if(computed < lastComputed || computed === Infinity && result === Infinity) {
+                if (computed < lastComputed || computed === Infinity && result === Infinity) {
                     result = value;
                     lastComputed = computed;
                 }
@@ -366,15 +368,15 @@
     };
 
     _.sample = function(obj, n, guard) {
-        if (n == null || guard) {
-            obj = obj.length == +obj.length ? obj : _.values(obj);
-            return obj[_.random(obj.length - 1)];
-        }
-        return _.shuffle(obj).slice(0, Math.max(0, n));
-    }//随机返回一个集合里面的n个值
+            if (n == null || guard) {
+                obj = obj.length == +obj.length ? obj : _.values(obj);
+                return obj[_.random(obj.length - 1)];
+            }
+            return _.shuffle(obj).slice(0, Math.max(0, n));
+        } //随机返回一个集合里面的n个值
 
     _.random = function(min, max) {
-        if(max == null) {
+        if (max == null) {
             max = min;
             min = 0;
         }
@@ -382,12 +384,53 @@
     }
 
     _.shuffle = function(obj) {
-        
+        var set = obj && obj.length === +obj.length ? obj : _.values(obj);
+        var length = set.length;
+        var shuffled = Array(length);
+        for (var index = 0, rand; index < length; index++) {
+            rand = _.random(0, index);
+            if (rand !== index) shuffled[index] = shuffled[rand];
+            shuffled[rand] = set[index];
+        }
+        return shuffled;
     }
 
+    _.sortBy = function(obj, iteratee, context) {
+        iteratee = _.iteratee(iteratee, context);
+        return _.map(obj, function(value, index, list) {
+            return {
+                value: value,
+                index: index,
+                criteria: iteratee(value, index, list)
+            };
+        }).sort(function(left, right) {
+            var a = left.criteria,
+                b = right.criteria;
+            if (a !== b) {
+                if (a > b || a === void 0) return 1; // void 0 就是undefined
+                if (a < b || b === void 0) return -1;
+            }
+            return left.index - right.index;
 
+        });
+    };
 
+    var group = function(behavior) {
+        return function(obj, iteratee, context) {
+            var result = {};
+            iteratee = _.iteratee(iteratee, context);
+            _.each(obj, function(value, index) {
+                var key = iteratee(value, index, obj);
+                behavior(result, value, key);
+            });
+            return result;
+        };
+    };//返回的是一个函数
 
+    _.groupBy = group(function(result, value, key) {
+        if(_.has(result, key)) result[key].push(value);
+        else result[key] = [value];
+    });// _.groupBy(obj, iteratee, context);参数列表
 
 
 

@@ -43,9 +43,32 @@ var list = [
 ];
 var result = _.filter(list, ready);*/
 
-
+/*
 var list = [-5,-2,-1,1,2];
 var max1 = _.max(list);
 var max2 = _.max(list, function(value, index, list) {
 	return value * value;
 })
+var list_ = _.shuffle(list);*/
+
+var list = [
+	{
+		name: "liujia1",
+		age: -22,
+	},
+	{
+		name: "liujia2",
+		age: 21,
+		education : "master"
+	},
+	{
+		name: "liujia3",
+		age: 20
+	}
+];
+
+var iteratee = function(value, index, list) {
+	return value.age *  value.age;
+}
+
+var result = _.sortBy(list, iteratee);
