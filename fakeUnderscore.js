@@ -475,5 +475,30 @@
     }
 // array is over
 
+    _.first = _.head = _.take = function(array, n, guard) {
+        if(array == null) return undefined;
+        if(n == null || guard) return array[0];
+        if(n < 0) return [];
+        return slice.call(array, 0 , n);
+    }
+
+    _.initial = function(array){
+        return slice.call(aray, 0 , Math.max(0, array.length - (n == null || guard ? 1 : n)));
+
+    }
+
+    _.last = function(array, n, guard) {
+        if(array == null) return undefined;
+        if(n == null || guard) return array[array.length - 1];
+        return slice.call(array, Math.max(array.length - n, 0));
+    }
+
+    _.rest = _.tail = _.drop = function(array, n, guard) {
+        return slice.call(array, n == null || guard ? 1 : n);
+    }
+
+    _.compact = function(array) {
+        return _.filter(array, _.identity);
+    }
 
 }.call(this));
