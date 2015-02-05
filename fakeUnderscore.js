@@ -442,14 +442,38 @@
     });
 
     _.sortedIndex = function(array, obj, iteratee, context) {
-        iteratee = _.iteratee(iteratee, context);
+        iteratee = _.iteratee(iteratee, context,1);
         var value = iteratee(obj);
         var low = 0, high = array.length;
         while (low < high) {
             var mid = low + high >>> 1;
-            if(iteratee(array))
+            if(iteratee(array[mid]) < value) low = mid + 1;
+            else high = mid;
         }
+        return low;
+    };
+
+    _.toArray = function(obj) {
+        if(!obj) return [];
+        if(_.isArray(obj)) return slice.call(obj);
+        if(obj.length === +obj.length) return _.map(obj, _.identity);
+        return _.values(obj);
     }
+
+    _.size = function(obj) {
+        if(obj == null) return 0;
+        return obj.length === +obj.length ? obj.length : _.keys(obj).length;
+    }
+
+    _.partition = function(obj, predicate, context) {
+        predicate = _.iteratee(iteratee, context);
+        var pass = [], fail = [];
+        _.each(obj, function(value, index, obj) {
+            (predicate(value, index, obj) ? pass : fail).push(value);
+        });
+        return [pass, fail];
+    }
+
 
 
 }.call(this));
