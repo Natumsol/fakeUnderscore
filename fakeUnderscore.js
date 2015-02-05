@@ -79,12 +79,12 @@
     _.iteratee = function(value, context, argCount) {
         if (value == null) return _.identity;
         if (_.isFunction(value)) return createCallback(value, context, argCount);
-        if (_.isObject(value)) return _.match(value);
+        if (_.isObject(value)) return _.matches(value);
         return _.property(value);
     };
 
     _.has = function(obj, key) {
-        return obj != null && hasOwnPropertyhasOwnProperty.call(obj, key);
+        return obj != null && hasOwnProperty.call(obj, key);
     }
 
     _.keys = function(obj) {
@@ -432,6 +432,24 @@
         else result[key] = [value];
     });// _.groupBy(obj, iteratee, context);参数列表
 
+    _.indexBy = group(function(result, value, key) {
+        result[key] = value;
+    });
+
+    _.countBy = group(function(result, value, key){
+        if(_.has(result, key)) result[key] ++;
+        else result[key] = 1;
+    });
+
+    _.sortedIndex = function(array, obj, iteratee, context) {
+        iteratee = _.iteratee(iteratee, context);
+        var value = iteratee(obj);
+        var low = 0, high = array.length;
+        while (low < high) {
+            var mid = low + high >>> 1;
+            if(iteratee(array))
+        }
+    }
 
 
 }.call(this));
