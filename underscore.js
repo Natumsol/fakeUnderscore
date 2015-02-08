@@ -469,7 +469,7 @@
   // Internal implementation of a recursive `flatten` function.
   var flatten = function(input, shallow, strict, output) {
     if (shallow && _.every(input, _.isArray)) {
-      return concat.apply(output, input);
+      return concat.apply(output, input);// output为上下文，即被调用对象！！input为参数数组！！！
     }
     for (var i = 0, length = input.length; i < length; i++) {
       var value = input[i];
