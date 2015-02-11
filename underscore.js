@@ -319,7 +319,7 @@
       rand = _.random(0, index);
       if (rand !== index) shuffled[index] = shuffled[rand];
       shuffled[rand] = set[index];
-    }
+    } 
     return shuffled;
   };
 
