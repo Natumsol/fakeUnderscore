@@ -51,7 +51,7 @@ var max2 = _.max(list, function(value, index, list) {
 })
 var list_ = _.shuffle(list);*/
 
-var list = [
+/*var list = [
 	{
 		name: "liujia1",
 		age: -22,
@@ -72,3 +72,4 @@ var iteratee = function(value, index, list) {
 }
 
 var result = _.sortBy(list, iteratee);
+*/
