@@ -2,7 +2,6 @@
 //     http://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 //     Underscore may be freely distributed under the MIT license.
-
 (function() {
 
   // Baseline setup
@@ -57,8 +56,9 @@
   // Internal function that returns an efficient (for current engines) version
   // of the passed-in callback, to be repeatedly applied in other Underscore
   // functions.
+  // 用来创建回调函数，主要是绑定上下文！
   var createCallback = function(func, context, argCount) {
-    if (context === void 0) return func;//void 0 --> undefined
+    if (context === void 0) return func;//void 0 就是 undefined
     switch (argCount == null ? 3 : argCount) {
       case 1: return function(value) {
         return func.call(context, value);
