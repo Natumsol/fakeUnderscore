@@ -96,7 +96,7 @@
         return keys;
     };
 
-  /*  _.each = _.forEach = function(obj, iteratee, context) {
+    /*  _.each = _.forEach = function(obj, iteratee, context) {
         if (obj == null) return obj;
         iteratee = createCallback(iteratee, context);
         var i, length = obj.length;
@@ -114,13 +114,13 @@
     };
 */
 
-    _.each = _.forEach = function(obj, iteratee, context){
-        if(obj == null) return obj;
+    _.each = _.forEach = function(obj, iteratee, context) {
+        if (obj == null) return obj;
         iteratee = _.iteratee(iteratee, context);
         var keys = obj.length !== +obj.length && _.keys(obj),
             length = (keys || obj).length,
-            currentKey,index;
-        for(index = 0; index < length; index ++) {
+            currentKey, index;
+        for (index = 0; index < length; index++) {
             currentKey = keys ? keys[index] : index;
             iteratee(obj[currentKey], currentKey, obj);
         }
@@ -129,6 +129,7 @@
 
 
     _.map = _.collect = function(obj, iteratee, context) {
+        var results = [];
         if (obj == null) return [];
         iteratee = _.iteratee(iteratee, context);
         var keys = obj.length !== +obj.length && _.keys(obj),
@@ -412,7 +413,7 @@
 
     _.sortBy = function(obj, iteratee, context) {
         iteratee = _.iteratee(iteratee, context);
-        return _.map(obj, function(value, index, list) {
+        return _.pluck(_.map(obj, function(value, index, list) {
             return {
                 value: value,
                 index: index,
@@ -427,7 +428,7 @@
             }
             return left.index - right.index;
 
-        });
+        }),"value");
     };
 
     var group = function(behavior) {
@@ -440,71 +441,75 @@
             });
             return result;
         };
-    };//返回的是一个函数
+    }; //返回的是一个函数
 
     _.groupBy = group(function(result, value, key) {
-        if(_.has(result, key)) result[key].push(value);
+        if (_.has(result, key)) result[key].push(value);
         else result[key] = [value];
-    });// _.groupBy(obj, iteratee, context);参数列表
+    }); // _.groupBy(obj, iteratee, context);参数列表
 
     _.indexBy = group(function(result, value, key) {
         result[key] = value;
     });
 
-    _.countBy = group(function(result, value, key){
-        if(_.has(result, key)) result[key] ++;
+    _.countBy = group(function(result, value, key) {
+        if (_.has(result, key)) result[key] ++;
         else result[key] = 1;
     });
 
     _.sortedIndex = function(array, obj, iteratee, context) {
-        iteratee = _.iteratee(iteratee, context,1);
+        iteratee = _.iteratee(iteratee, context, 1);
         var value = iteratee(obj);
-        var low = 0, high = array.length;
+        var low = 0,
+            high = array.length;
         while (low < high) {
             var mid = low + high >>> 1;
-            if(iteratee(array[mid]) < value) low = mid + 1;
+            if (iteratee(array[mid]) < value) low = mid + 1;
             else high = mid;
         }
         return low;
     };
 
     _.toArray = function(obj) {
-        if(!obj) return [];
-        if(_.isArray(obj)) return slice.call(obj);
-        if(obj.length === +obj.length) return _.map(obj, _.identity);
+        if (!obj) return [];
+        if (_.isArray(obj)) return slice.call(obj);
+        if (obj.length === +obj.length) return _.map(obj, _.identity);
         return _.values(obj);
     }
-
+    _.isArray = nativeIsArray || function(obj) {
+        return toString.call(obj) === '[object Array]';
+    };
     _.size = function(obj) {
-        if(obj == null) return 0;
+        if (obj == null) return 0;
         return obj.length === +obj.length ? obj.length : _.keys(obj).length;
     }
 
     _.partition = function(obj, predicate, context) {
-        predicate = _.iteratee(iteratee, context);
-        var pass = [], fail = [];
-        _.each(obj, function(value, index, obj) {
-            (predicate(value, index, obj) ? pass : fail).push(value);
-        });
-        return [pass, fail];
-    }
-// array is over
+            predicate = _.iteratee(iteratee, context);
+            var pass = [],
+                fail = [];
+            _.each(obj, function(value, index, obj) {
+                (predicate(value, index, obj) ? pass : fail).push(value);
+            });
+            return [pass, fail];
+        }
+        // array is over
 
     _.first = _.head = _.take = function(array, n, guard) {
-        if(array == null) return undefined;
-        if(n == null || guard) return array[0];
-        if(n < 0) return [];
-        return slice.call(array, 0 , n);
+        if (array == null) return undefined;
+        if (n == null || guard) return array[0];
+        if (n < 0) return [];
+        return slice.call(array, 0, n);
     }
 
-    _.initial = function(array){
-        return slice.call(aray, 0 , Math.max(0, array.length - (n == null || guard ? 1 : n)));
+    _.initial = function(array) {
+        return slice.call(aray, 0, Math.max(0, array.length - (n == null || guard ? 1 : n)));
 
     }
 
     _.last = function(array, n, guard) {
-        if(array == null) return undefined;
-        if(n == null || guard) return array[array.length - 1];
+        if (array == null) return undefined;
+        if (n == null || guard) return array[array.length - 1];
         return slice.call(array, Math.max(array.length - n, 0));
     }
 
@@ -517,13 +522,13 @@
     }
 
     var flatten = function(input, shallow, strict, output) { //定义output是为了能够递归
-        if(shallow && _.every(input, _.isArray)) {
+        if (shallow && _.every(input, _.isArray)) {
             return concat.apply(output, input);
         }
         for (var i = 0, length = input.length; i < length; i++) {
             var value = input[i];
             if (!_.isArray(value) && !_.isArguments(value)) {
-                if(!strict) output.push(value);
+                if (!strict) output.push(value);
             } else if (shallow) {
                 push.apply(output, value);
             }

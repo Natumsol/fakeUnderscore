@@ -75,7 +75,7 @@ var result = _.sortBy(list, iteratee);
 */
 
 
-var mykeys = function(obj) {
+var _keys = function(obj) {
 	var keys = [];
 	if (obj == null) return keys;
 	if (Object.keys) keys = Object.keys(obj);
@@ -186,20 +186,92 @@ function shuffle_inside_out(obj){
 	return result;
 }
 
-for(var i = 0, target1 = [],target2 = []; i < 1000000; i ++){
-	target1.push(i);
-	target2.push(i);
+var sortBy = function(obj, iteratee, context) {
+	iteratee = _.iteratee(iteratee, context);
+	return pluck(map(obj, function(value, index, obj){
+		return {
+			value: value,
+			index: index,
+			criterion: iteratee(value, index, obj)
+		}
+	}).sort(function(left, right){
+		var a = left.criterion,
+			b = right.criterion;
+		if(a !== b) {
+			return a - b;
+		}
+		return a.index - b.index
+	}), "value")
 }
-var result = [];
 
-/*console.time("shuffle")
-result.push(shuffle1(target1));
-console.timeEnd("shuffle");*/
+var pluck = function(obj, key){
+	return map(obj, property(key));
+}
 
-console.time("shuffle_inside_out")
-result.push(shuffle_inside_out(target2));
-console.timeEnd("shuffle_inside_out");
+var property = function(key){
+	return function(obj) {
+		return obj[key];
+	}
+}
 
-console.time("_.shuffle")
-result.push(_.shuffle(target2));
-console.timeEnd("_.shuffle");
+var map = function(obj, iteratee, context) {
+	var results = [];
+	if(obj == null) return results;
+	iteratee = _.iteratee(iteratee, context);
+	var keys = obj.length !== +obj.length && _keys(obj),
+		length = (keys || obj).length,
+		currentKey, index;
+	for(index = 0; index < length; index ++) {
+		currentKey = keys ? keys[index] : index;
+		results.push(iteratee(obj[currentKey], currentKey, obj));
+	}
+
+	return results;
+}
+
+var group = function(behavior) {
+	var result = {};
+	return function(obj, iteratee, context) {
+		iteratee = _.iteratee(iteratee, context);
+		each(obj, function(value, index, obj){
+			var key = iteratee(value, index, obj);
+			behavior(result, value, key)
+		})
+		return result;
+	}
+}
+
+var groupBy = group(function(result, value, key) {
+	if(has(result, key)) result[key].push(value);
+	else result[key] = [value];
+})
+
+var has = function(obj, key) {
+	return obj !== null && Object.prototype,hasOwnProperty.call(obj, key);
+}
+
+var each = function(obj, iteratee, context) {
+	if(obj == null) return obj;
+	iteratee = _.iteratee(iteratee, context);
+	var keys = obj.length !== +obj.length && _keys(obj),
+		length = (keys || obj).length,
+		currentKey, index;
+	for(index = 0; index < length; index ++) {
+		currentKey = keys ? key[index] : index;
+		iteratee(obj[currentKey], currentKey, obj);
+	}
+
+	return obj;
+}
+
+var flatten = function(array) {
+	var result = [];
+	for(var i = 0; i < array.length; i ++) {
+		if(_.isArray(array[i])){
+			result = result.concat(flatten(array[i]))
+		} else {
+			result.push(array[i])
+		}
+	}
+	return result;
+}
