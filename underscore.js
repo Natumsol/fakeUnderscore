@@ -14,22 +14,24 @@
   var previousUnderscore = root._;
 
   // Save bytes in the minified (but not gzipped) version:
-  var ArrayProto = Array.prototype, ObjProto = Object.prototype, FuncProto = Function.prototype;
+  var ArrayProto = Array.prototype,
+    ObjProto = Object.prototype,
+    FuncProto = Function.prototype;
 
   // Create quick reference variables for speed access to core prototypes.
   var
-    push             = ArrayProto.push,
-    slice            = ArrayProto.slice,
-    concat           = ArrayProto.concat,
-    toString         = ObjProto.toString,
-    hasOwnProperty   = ObjProto.hasOwnProperty;
+    push = ArrayProto.push,
+    slice = ArrayProto.slice,
+    concat = ArrayProto.concat,
+    toString = ObjProto.toString,
+    hasOwnProperty = ObjProto.hasOwnProperty;
 
   // All **ECMAScript 5** native function implementations that we hope to use
   // are declared here.
   var
-    nativeIsArray      = Array.isArray,
-    nativeKeys         = Object.keys,
-    nativeBind         = FuncProto.bind;
+    nativeIsArray = Array.isArray,
+    nativeKeys = Object.keys,
+    nativeBind = FuncProto.bind;
 
   // Create a safe reference to the Underscore object for use below.
   var _ = function(obj) {
@@ -58,20 +60,24 @@
   // functions.
   // 用来创建回调函数，主要是绑定上下文！
   var createCallback = function(func, context, argCount) {
-    if (context === void 0) return func;//void 0 就是 undefined
+    if (context === void 0) return func; //void 0 就是 undefined
     switch (argCount == null ? 3 : argCount) {
-      case 1: return function(value) {
-        return func.call(context, value);
-      };
-      case 2: return function(value, other) {
-        return func.call(context, value, other);
-      };
-      case 3: return function(value, index, collection) {
-        return func.call(context, value, index, collection);
-      };
-      case 4: return function(accumulator, value, index, collection) {
-        return func.call(context, accumulator, value, index, collection);
-      };
+      case 1:
+        return function(value) {
+          return func.call(context, value);
+        };
+      case 2:
+        return function(value, other) {
+          return func.call(context, value, other);
+        };
+      case 3:
+        return function(value, index, collection) {
+          return func.call(context, value, index, collection);
+        };
+      case 4:
+        return function(accumulator, value, index, collection) {
+          return func.call(context, accumulator, value, index, collection);
+        };
     }
     return function() {
       return func.apply(context, arguments);
@@ -116,9 +122,9 @@
     if (obj == null) return [];
     iteratee = _.iteratee(iteratee, context);
     var keys = obj.length !== +obj.length && _.keys(obj),
-        length = (keys || obj).length,
-        results = Array(length),
-        currentKey;
+      length = (keys || obj).length,
+      results = Array(length),
+      currentKey;
     for (var index = 0; index < length; index++) {
       currentKey = keys ? keys[index] : index;
       results[index] = iteratee(obj[currentKey], currentKey, obj);
@@ -134,8 +140,9 @@
     if (obj == null) obj = [];
     iteratee = createCallback(iteratee, context, 4);
     var keys = obj.length !== +obj.length && _.keys(obj),
-        length = (keys || obj).length,
-        index = 0, currentKey;
+      length = (keys || obj).length,
+      index = 0,
+      currentKey;
     if (arguments.length < 3) {
       if (!length) throw new TypeError(reduceError);
       memo = obj[keys ? keys[index++] : index++];
@@ -151,9 +158,9 @@
   _.reduceRight = _.foldr = function(obj, iteratee, memo, context) {
     if (obj == null) obj = [];
     iteratee = createCallback(iteratee, context, 4);
-    var keys = obj.length !== + obj.length && _.keys(obj),
-        index = (keys || obj).length,
-        currentKey;
+    var keys = obj.length !== +obj.length && _.keys(obj),
+      index = (keys || obj).length,
+      currentKey;
     if (arguments.length < 3) {
       if (!index) throw new TypeError(reduceError);
       memo = obj[keys ? keys[--index] : --index];
@@ -201,8 +208,8 @@
     if (obj == null) return true;
     predicate = _.iteratee(predicate, context);
     var keys = obj.length !== +obj.length && _.keys(obj),
-        length = (keys || obj).length,
-        index, currentKey;
+      length = (keys || obj).length,
+      index, currentKey;
     for (index = 0; index < length; index++) {
       currentKey = keys ? keys[index] : index;
       if (!predicate(obj[currentKey], currentKey, obj)) return false;
@@ -216,8 +223,8 @@
     if (obj == null) return false;
     predicate = _.iteratee(predicate, context);
     var keys = obj.length !== +obj.length && _.keys(obj),
-        length = (keys || obj).length,
-        index, currentKey;
+      length = (keys || obj).length,
+      index, currentKey;
     for (index = 0; index < length; index++) {
       currentKey = keys ? keys[index] : index;
       if (predicate(obj[currentKey], currentKey, obj)) return true;
@@ -249,20 +256,23 @@
 
   // Convenience version of a common use case of `filter`: selecting only objects
   // containing specific `key:value` pairs.
+  //找到所有含有键值对attr的obj
   _.where = function(obj, attrs) {
     return _.filter(obj, _.matches(attrs));
   };
 
   // Convenience version of a common use case of `find`: getting the first object
   // containing specific `key:value` pairs.
+  // 用来判断obj是否存在键值对为attr的对象
   _.findWhere = function(obj, attrs) {
     return _.find(obj, _.matches(attrs));
   };
 
   // Return the maximum element (or element-based computation).
   _.max = function(obj, iteratee, context) {
-    var result = -Infinity, lastComputed = -Infinity,
-        value, computed;
+    var result = -Infinity,
+      lastComputed = -Infinity,
+      value, computed;
     if (iteratee == null && obj != null) {
       obj = obj.length === +obj.length ? obj : _.values(obj);
       for (var i = 0, length = obj.length; i < length; i++) {
@@ -286,8 +296,9 @@
 
   // Return the minimum element (or element-based computation).
   _.min = function(obj, iteratee, context) {
-    var result = Infinity, lastComputed = Infinity,
-        value, computed;
+    var result = Infinity,
+      lastComputed = Infinity,
+      value, computed;
     if (iteratee == null && obj != null) {
       obj = obj.length === +obj.length ? obj : _.values(obj);
       for (var i = 0, length = obj.length; i < length; i++) {
@@ -319,7 +330,7 @@
       rand = _.random(0, index);
       if (rand !== index) shuffled[index] = shuffled[rand];
       shuffled[rand] = set[index];
-    } 
+    }
     return shuffled;
   };
 
@@ -367,10 +378,13 @@
     };
   };
 
+  //group(behavior)(obj, iteratee, context)
+
   // Groups the object's values by a criterion. Pass either a string attribute
   // to group by, or a function that returns the criterion.
   _.groupBy = group(function(result, value, key) {
-    if (_.has(result, key)) result[key].push(value); else result[key] = [value];
+    if (_.has(result, key)) result[key].push(value);
+    else result[key] = [value];
   });
 
   // Indexes the object's values by a criterion, similar to `groupBy`, but for
@@ -383,7 +397,8 @@
   // either a string attribute to count by, or a function that returns the
   // criterion.
   _.countBy = group(function(result, value, key) {
-    if (_.has(result, key)) result[key]++; else result[key] = 1;
+    if (_.has(result, key)) result[key] ++;
+    else result[key] = 1;
   });
 
   // Use a comparator function to figure out the smallest index at which
@@ -391,10 +406,12 @@
   _.sortedIndex = function(array, obj, iteratee, context) {
     iteratee = _.iteratee(iteratee, context, 1);
     var value = iteratee(obj);
-    var low = 0, high = array.length;
+    var low = 0,
+      high = array.length;
     while (low < high) {
       var mid = low + high >>> 1;
-      if (iteratee(array[mid]) < value) low = mid + 1; else high = mid;
+      if (iteratee(array[mid]) < value) low = mid + 1;
+      else high = mid;
     }
     return low;
   };
@@ -417,7 +434,8 @@
   // predicate, and one whose elements all do not satisfy the predicate.
   _.partition = function(obj, predicate, context) {
     predicate = _.iteratee(predicate, context);
-    var pass = [], fail = [];
+    var pass = [],
+      fail = [];
     _.each(obj, function(value, key, obj) {
       (predicate(value, key, obj) ? pass : fail).push(value);
     });
@@ -469,7 +487,7 @@
   // Internal implementation of a recursive `flatten` function.
   var flatten = function(input, shallow, strict, output) {
     if (shallow && _.every(input, _.isArray)) {
-      return concat.apply(output, input);// output为上下文，即被调用对象！！input为参数数组！！！
+      return concat.apply(output, input); // output为上下文，即被调用对象！！input为参数数组！！！
     }
     for (var i = 0, length = input.length; i < length; i++) {
       var value = input[i];
@@ -552,7 +570,7 @@
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
     var rest = flatten(slice.call(arguments, 1), true, true, []);
-    return _.filter(array, function(value){
+    return _.filter(array, function(value) {
       return !_.contains(rest, value);
     });
   };
@@ -591,7 +609,8 @@
   // for **isSorted** to use binary search.
   _.indexOf = function(array, item, isSorted) {
     if (array == null) return -1;
-    var i = 0, length = array.length;
+    var i = 0,
+      length = array.length;
     if (isSorted) {
       if (typeof isSorted == 'number') {
         i = isSorted < 0 ? Math.max(0, length + isSorted) : isSorted;
@@ -600,7 +619,8 @@
         return array[i] === item ? i : -1;
       }
     }
-    for (; i < length; i++) if (array[i] === item) return i;
+    for (; i < length; i++)
+      if (array[i] === item) return i;
     return -1;
   };
 
@@ -610,7 +630,8 @@
     if (typeof from == 'number') {
       idx = from < 0 ? idx + from + 1 : Math.min(idx, from + 1);
     }
-    while (--idx >= 0) if (array[idx] === item) return idx;
+    while (--idx >= 0)
+      if (array[idx] === item) return idx;
     return -1;
   };
 
@@ -638,7 +659,7 @@
   // ------------------
 
   // Reusable constructor function for prototype setting.
-  var Ctor = function(){};
+  var Ctor = function() {};
 
   // Create a function bound to a given object (assigning `this`, and arguments,
   // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
@@ -680,7 +701,8 @@
   // are the method names to be bound. Useful for ensuring that all callbacks
   // defined on an object belong to it.
   _.bindAll = function(obj) {
-    var i, length = arguments.length, key;
+    var i, length = arguments.length,
+      key;
     if (length <= 1) throw new Error('bindAll must be passed function names');
     for (i = 1; i < length; i++) {
       key = arguments[i];
@@ -705,7 +727,7 @@
   // it with the arguments supplied.
   _.delay = function(func, wait) {
     var args = slice.call(arguments, 2);
-    return setTimeout(function(){
+    return setTimeout(function() {
       return func.apply(null, args);
     }, wait);
   };
@@ -849,7 +871,8 @@
     if (!_.isObject(obj)) return [];
     if (nativeKeys) return nativeKeys(obj);
     var keys = [];
-    for (var key in obj) if (_.has(obj, key)) keys.push(key);
+    for (var key in obj)
+      if (_.has(obj, key)) keys.push(key);
     return keys;
   };
 
@@ -903,7 +926,7 @@
       source = arguments[i];
       for (prop in source) {
         if (hasOwnProperty.call(source, prop)) {
-            obj[prop] = source[prop];
+          obj[prop] = source[prop];
         }
       }
     }
@@ -912,7 +935,8 @@
 
   // Return a copy of the object only containing the whitelisted properties.
   _.pick = function(obj, iteratee, context) {
-    var result = {}, key;
+    var result = {},
+      key;
     if (obj == null) return result;
     if (_.isFunction(iteratee)) {
       iteratee = createCallback(iteratee, context);
@@ -931,7 +955,7 @@
     return result;
   };
 
-   // Return a copy of the object without the blacklisted properties.
+  // Return a copy of the object without the blacklisted properties.
   _.omit = function(obj, iteratee, context) {
     if (_.isFunction(iteratee)) {
       iteratee = _.negate(iteratee);
@@ -986,7 +1010,7 @@
     switch (className) {
       // Strings, numbers, regular expressions, dates, and booleans are compared by value.
       case '[object RegExp]':
-      // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
+        // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
       case '[object String]':
         // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
         // equivalent to `new String("5")`.
@@ -1015,7 +1039,8 @@
     }
     // Objects with different constructors are not equivalent, but `Object`s
     // from different frames are.
-    var aCtor = a.constructor, bCtor = b.constructor;
+    var aCtor = a.constructor,
+      bCtor = b.constructor;
     if (
       aCtor !== bCtor &&
       // Handle Object.create(x) cases
@@ -1042,7 +1067,8 @@
       }
     } else {
       // Deep compare objects.
-      var keys = _.keys(a), key;
+      var keys = _.keys(a),
+        key;
       size = keys.length;
       // Ensure that both objects contain the same number of properties before comparing deep equality.
       result = _.keys(b).length === size;
@@ -1070,7 +1096,8 @@
   _.isEmpty = function(obj) {
     if (obj == null) return true;
     if (_.isArray(obj) || _.isString(obj) || _.isArguments(obj)) return obj.length === 0;
-    for (var key in obj) if (_.has(obj, key)) return false;
+    for (var key in obj)
+      if (_.has(obj, key)) return false;
     return true;
   };
 
@@ -1166,7 +1193,7 @@
     };
   };
 
-  _.noop = function(){};
+  _.noop = function() {};
 
   _.property = function(key) {
     return function(obj) {
@@ -1176,12 +1203,14 @@
 
   // Returns a predicate for checking whether an object has a given set of `key:value` pairs.
   _.matches = function(attrs) {
-    var pairs = _.pairs(attrs), length = pairs.length;
+    var pairs = _.pairs(attrs),
+      length = pairs.length;
     return function(obj) {
       if (obj == null) return !length;
       obj = new Object(obj);
       for (var i = 0; i < length; i++) {
-        var pair = pairs[i], key = pair[0];
+        var pair = pairs[i],
+          key = pair[0];
         if (pair[1] !== obj[key] || !(key in obj)) return false;
       }
       return true;
@@ -1210,7 +1239,7 @@
     return new Date().getTime();
   };
 
-   // List of HTML entities for escaping.
+  // List of HTML entities for escaping.
   var escapeMap = {
     '&': '&amp;',
     '<': '&lt;',
@@ -1257,9 +1286,9 @@
   // By default, Underscore uses ERB-style template delimiters, change the
   // following template settings to use alternative delimiters.
   _.templateSettings = {
-    evaluate    : /<%([\s\S]+?)%>/g,
-    interpolate : /<%=([\s\S]+?)%>/g,
-    escape      : /<%-([\s\S]+?)%>/g
+    evaluate: /<%([\s\S]+?)%>/g,
+    interpolate: /<%=([\s\S]+?)%>/g,
+    escape: /<%-([\s\S]+?)%>/g
   };
 
   // When customizing `templateSettings`, if you don't want to define an
@@ -1270,10 +1299,10 @@
   // Certain characters need to be escaped so that they can be put into a
   // string literal.
   var escapes = {
-    "'":      "'",
-    '\\':     '\\',
-    '\r':     'r',
-    '\n':     'n',
+    "'": "'",
+    '\\': '\\',
+    '\r': 'r',
+    '\n': 'n',
     '\u2028': 'u2028',
     '\u2029': 'u2029'
   };
@@ -1294,9 +1323,7 @@
 
     // Combine delimiters into one regular expression via alternation.
     var matcher = RegExp([
-      (settings.escape || noMatch).source,
-      (settings.interpolate || noMatch).source,
-      (settings.evaluate || noMatch).source
+      (settings.escape || noMatch).source, (settings.interpolate || noMatch).source, (settings.evaluate || noMatch).source
     ].join('|') + '|$', 'g');
 
     // Compile the template source, escaping string literals appropriately.

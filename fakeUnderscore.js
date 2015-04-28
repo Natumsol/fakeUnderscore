@@ -96,7 +96,7 @@
         return keys;
     };
 
-    _.each = _.forEach = function(obj, iteratee, context) {
+  /*  _.each = _.forEach = function(obj, iteratee, context) {
         if (obj == null) return obj;
         iteratee = createCallback(iteratee, context);
         var i, length = obj.length;
@@ -112,6 +112,21 @@
         }
         return obj;
     };
+*/
+
+    _.each = _.forEach = function(obj, iteratee, context){
+        if(obj == null) return obj;
+        iteratee = _.iteratee(iteratee, context);
+        var keys = obj.length !== +obj.length && _.keys(obj),
+            length = (keys || obj).length,
+            currentKey,index;
+        for(index = 0; index < length; index ++) {
+            currentKey = keys ? keys[index] : index;
+            iteratee(obj[currentKey], currentKey, obj);
+        }
+        return obj;
+    }
+
 
     _.map = _.collect = function(obj, iteratee, context) {
         if (obj == null) return [];
@@ -501,7 +516,7 @@
         return _.filter(array, _.identity)
     }
 
-    var flatten = function(input, shallow, strict, output) {
+    var flatten = function(input, shallow, strict, output) { //定义output是为了能够递归
         if(shallow && _.every(input, _.isArray)) {
             return concat.apply(output, input);
         }
@@ -513,7 +528,14 @@
                 push.apply(output, value);
             }
         }
+    };
+
+    _.flatten = function(array, shallow) {
+        return flatten(array, shallow, false, []);
     }
 
+    _.without = function(array) {
+        return _.difference(array, slice.call(arguments, 1))
+    }
 
 }.call(this));

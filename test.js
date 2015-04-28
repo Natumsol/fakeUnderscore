@@ -73,3 +73,133 @@ var iteratee = function(value, index, list) {
 
 var result = _.sortBy(list, iteratee);
 */
+
+
+var mykeys = function(obj) {
+	var keys = [];
+	if (obj == null) return keys;
+	if (Object.keys) keys = Object.keys(obj);
+	else
+		for (var key in obj) {
+			if (Object.prototype.hasOwnProperty(key)) {
+				keys.push(key);
+			}
+		}
+
+	return keys;
+}
+
+var myReduce = function(obj, iteratee, memo, context) {
+	if(obj == null) obj = [];
+	iteratee = _.iteratee(iteratee);
+	var keys = obj.length !== +obj.length && mykeys(obj),
+		length = (keys || obj).length,
+		currentKey,index = 0;
+	if(arguments.length < 3) {
+		if(!length) throw new TypeError("Reduce of empty array with no initial value");
+		memo = obj[keys ? keys[index ++] : index ++];
+	}
+
+	for(; index < length ; index ++) {
+		currentKey = keys ? keys[index] : index;
+		memo = iteratee(memo, obj[currentKey], currentKey, obj);
+	}
+	return memo;
+}
+
+var myReduceRight = function(obj, iteratee, memo, context) {
+	if(obj == null) obj = [];
+	iteratee = _.iteratee(iteratee);
+	var keys = obj.length !== +obj.length && mykeys(obj),
+		length = (keys || obj).length,
+		currentKey,index = length -1;
+	if(arguments.length < 3) {
+		if(!length) throw new TypeError("Reduce of empty array with no initial value");
+		memo = obj[keys ? keys[index --] : index --];
+	}
+
+	for(; index >= 0 ; index --) {
+		currentKey = keys ? keys[index] : index;
+		memo = iteratee(memo, obj[currentKey], currentKey, obj);
+	}
+	return memo;
+}
+
+function shuffle1(array) {
+  var copy = [], n = array.length, i;
+
+  // While there remain elements to shuffle…
+  while (n) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * array.length);
+
+    // If not already shuffled, move it to the new array.
+    if (i in array) {
+      copy.push(array[i]);
+      delete array[i];
+      n--;
+    }
+  }
+
+  return copy;
+}
+
+function shuffle2(array) {
+  var copy = [], n = array.length, i;
+
+  // While there remain elements to shuffle…
+  while (n) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * n--);
+
+    // And move it to the new array.
+    copy.push(array.splice(i, 1)[0]);
+  }
+
+  return copy;
+}
+
+function shuffle(array) {
+	var temp;
+	for(var i = array.length, rand; i >= 0 ; i --) {
+		rand = _.random(i);
+		console.time("swap");
+		temp = array[i];
+		array[i] = array[rand];
+		array[rand] = temp;
+		console.timeEnd("swap");
+	}
+	return array;
+}
+
+
+function shuffle_inside_out(obj){
+	var result = [];
+	if(obj == null) return result;
+	for(var index = 0, rand; index < obj.length; index ++) {
+		rand = _.random(index);
+		if(index !== rand) result[index] = result[rand];
+		result[rand] = obj[index];
+	}
+	return result;
+}
+
+for(var i = 0, target1 = [],target2 = []; i < 1000000; i ++){
+	target1.push(i);
+	target2.push(i);
+}
+var result = [];
+
+/*console.time("shuffle")
+result.push(shuffle1(target1));
+console.timeEnd("shuffle");*/
+
+console.time("shuffle_inside_out")
+result.push(shuffle_inside_out(target2));
+console.timeEnd("shuffle_inside_out");
+
+console.time("_.shuffle")
+result.push(_.shuffle(target2));
+console.timeEnd("_.shuffle");
