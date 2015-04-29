@@ -166,6 +166,9 @@
   };
 
   // Return the first value which passes a truth test. Aliased as `detect`.
+  // 返回第一个通过断言测试的结果
+  // _.some(list, predicate, context)
+  // predicate为断言函数,_some()只要list中有满足断言函数的，就返回真。
   _.find = _.detect = function(obj, predicate, context) {
     var result;
     predicate = _.iteratee(predicate, context);
@@ -177,6 +180,7 @@
     });
     return result;
   };
+
 
   // Return all the elements that pass a truth test.
   // Aliased as `select`.
@@ -212,9 +216,12 @@
 
   // Determine if at least one element in the object matches a truth test.
   // Aliased as `any`.
+  // _.some([false, "", 1, "hello"])
+  // => true
+  // _.some([1, 2, 3, 4], function(value, index, array){ return value > 2 || false})
   _.some = _.any = function(obj, predicate, context) {
     if (obj == null) return false;
-    predicate = _.iteratee(predicate, context);
+    predicate = _.iteratee(predicate, context);//如果predicate是空，则返回obj元素本身。
     var keys = obj.length !== +obj.length && _.keys(obj),
         length = (keys || obj).length,
         index, currentKey;

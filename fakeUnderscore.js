@@ -161,20 +161,20 @@
             memo = iteratee(memo, obj[currentKey], index, obj);
         }
         return memo;
-    }
+    };
 
     _.some = _.any = function(obj, predicate, context) {
-        if (obj == null) return false;
-        predicate = _.iteratee(predicate, context);
+        if(obj === null) return false;
+        var predicate = createCallback(predicate, context);
         var keys = obj.length !== +obj.length && _.keys(obj),
-            length = (keys || obj).length,
+            length = (key || obj).length,
             index, currentKey;
-        for (index = 0; index < length; index++) {
-            currentKey = keys ? keys[index] : index;
-            if (predicate(obj[currentKey], currentKey, obj)) return true;
-        }
+        for(index = 0; index < length; index ++) {
+            currentKey = keys ? keys[index]: index;
+            if(predicate(obj[currentKey], currentKey, index)) return true;
+        }        
         return false;
-    }
+    };
 
     _.every = _.all = function(obj, predicate, context) {
         if (obj == null) obj = [];
@@ -187,13 +187,13 @@
             if (!predicate(obj[currentKey], currentKey, obj)) return false;
         }
         return true;
-    }
+    };
 
     _.find = _.detect = function(obj, predicate, context) {
         var result;
         predicate = _.iteratee(predicate, context);
-        _.some(obj, function(value, index, list) {
-            if (predicate(value, index, list)) {
+        _.some(obj, function(value, index, list){
+            if(predicate(value, index, list)) {
                 result = value;
                 return true;
             }
@@ -205,9 +205,9 @@
         var results = [];
         if (obj == null) return results;
         predicate = _.iteratee(predicate, context);
-        _.each(obj, function(value, index, list) {
-            if (predicate(value, index, list)) results.push(value);
-        });
+        _.each(obj, function(value, index, list){
+            if(predicate(value, index, list)) results.push(value);
+        })
         return results;
     }
 

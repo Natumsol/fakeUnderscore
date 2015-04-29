@@ -73,3 +73,15 @@ var iteratee = function(value, index, list) {
 
 var result = _.sortBy(list, iteratee);
 */
+var a = {
+	mode : "1",
+	name: "liujia"
+}
+
+var test = {
+	mode : "1",
+	name: "liujia",
+	age: "33"
+}
+
+var func = _.matches(a)(test);
