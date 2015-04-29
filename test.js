@@ -73,6 +73,7 @@ var iteratee = function(value, index, list) {
 
 var result = _.sortBy(list, iteratee);
 */
+<<<<<<< HEAD
 var a = {
 	mode : "1",
 	name: "liujia"
@@ -85,3 +86,207 @@ var test = {
 }
 
 var func = _.matches(a)(test);
+=======
+
+
+var _keys = function(obj) {
+	var keys = [];
+	if (obj == null) return keys;
+	if (Object.keys) keys = Object.keys(obj);
+	else
+		for (var key in obj) {
+			if (Object.prototype.hasOwnProperty(key)) {
+				keys.push(key);
+			}
+		}
+
+	return keys;
+}
+
+var myReduce = function(obj, iteratee, memo, context) {
+	if(obj == null) obj = [];
+	iteratee = _.iteratee(iteratee);
+	var keys = obj.length !== +obj.length && mykeys(obj),
+		length = (keys || obj).length,
+		currentKey,index = 0;
+	if(arguments.length < 3) {
+		if(!length) throw new TypeError("Reduce of empty array with no initial value");
+		memo = obj[keys ? keys[index ++] : index ++];
+	}
+
+	for(; index < length ; index ++) {
+		currentKey = keys ? keys[index] : index;
+		memo = iteratee(memo, obj[currentKey], currentKey, obj);
+	}
+	return memo;
+}
+
+var myReduceRight = function(obj, iteratee, memo, context) {
+	if(obj == null) obj = [];
+	iteratee = _.iteratee(iteratee);
+	var keys = obj.length !== +obj.length && mykeys(obj),
+		length = (keys || obj).length,
+		currentKey,index = length -1;
+	if(arguments.length < 3) {
+		if(!length) throw new TypeError("Reduce of empty array with no initial value");
+		memo = obj[keys ? keys[index --] : index --];
+	}
+
+	for(; index >= 0 ; index --) {
+		currentKey = keys ? keys[index] : index;
+		memo = iteratee(memo, obj[currentKey], currentKey, obj);
+	}
+	return memo;
+}
+
+function shuffle1(array) {
+  var copy = [], n = array.length, i;
+
+  // While there remain elements to shuffle…
+  while (n) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * array.length);
+
+    // If not already shuffled, move it to the new array.
+    if (i in array) {
+      copy.push(array[i]);
+      delete array[i];
+      n--;
+    }
+  }
+
+  return copy;
+}
+
+function shuffle2(array) {
+  var copy = [], n = array.length, i;
+
+  // While there remain elements to shuffle…
+  while (n) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * n--);
+
+    // And move it to the new array.
+    copy.push(array.splice(i, 1)[0]);
+  }
+
+  return copy;
+}
+
+function shuffle(array) {
+	var temp;
+	for(var i = array.length, rand; i >= 0 ; i --) {
+		rand = _.random(i);
+		console.time("swap");
+		temp = array[i];
+		array[i] = array[rand];
+		array[rand] = temp;
+		console.timeEnd("swap");
+	}
+	return array;
+}
+
+
+function shuffle_inside_out(obj){
+	var result = [];
+	if(obj == null) return result;
+	for(var index = 0, rand; index < obj.length; index ++) {
+		rand = _.random(index);
+		if(index !== rand) result[index] = result[rand];
+		result[rand] = obj[index];
+	}
+	return result;
+}
+
+var sortBy = function(obj, iteratee, context) {
+	iteratee = _.iteratee(iteratee, context);
+	return pluck(map(obj, function(value, index, obj){
+		return {
+			value: value,
+			index: index,
+			criterion: iteratee(value, index, obj)
+		}
+	}).sort(function(left, right){
+		var a = left.criterion,
+			b = right.criterion;
+		if(a !== b) {
+			return a - b;
+		}
+		return a.index - b.index
+	}), "value")
+}
+
+var pluck = function(obj, key){
+	return map(obj, property(key));
+}
+
+var property = function(key){
+	return function(obj) {
+		return obj[key];
+	}
+}
+
+var map = function(obj, iteratee, context) {
+	var results = [];
+	if(obj == null) return results;
+	iteratee = _.iteratee(iteratee, context);
+	var keys = obj.length !== +obj.length && _keys(obj),
+		length = (keys || obj).length,
+		currentKey, index;
+	for(index = 0; index < length; index ++) {
+		currentKey = keys ? keys[index] : index;
+		results.push(iteratee(obj[currentKey], currentKey, obj));
+	}
+
+	return results;
+}
+
+var group = function(behavior) {
+	var result = {};
+	return function(obj, iteratee, context) {
+		iteratee = _.iteratee(iteratee, context);
+		each(obj, function(value, index, obj){
+			var key = iteratee(value, index, obj);
+			behavior(result, value, key)
+		})
+		return result;
+	}
+}
+
+var groupBy = group(function(result, value, key) {
+	if(has(result, key)) result[key].push(value);
+	else result[key] = [value];
+})
+
+var has = function(obj, key) {
+	return obj !== null && Object.prototype,hasOwnProperty.call(obj, key);
+}
+
+var each = function(obj, iteratee, context) {
+	if(obj == null) return obj;
+	iteratee = _.iteratee(iteratee, context);
+	var keys = obj.length !== +obj.length && _keys(obj),
+		length = (keys || obj).length,
+		currentKey, index;
+	for(index = 0; index < length; index ++) {
+		currentKey = keys ? key[index] : index;
+		iteratee(obj[currentKey], currentKey, obj);
+	}
+
+	return obj;
+}
+
+var flatten = function(array) {
+	var result = [];
+	for(var i = 0; i < array.length; i ++) {
+		if(_.isArray(array[i])){
+			result = result.concat(flatten(array[i]))
+		} else {
+			result.push(array[i])
+		}
+	}
+	return result;
+}
+>>>>>>> 67fcdf0825bce6f549e7d60c14effb3f01cd4332
