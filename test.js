@@ -73,21 +73,6 @@ var iteratee = function(value, index, list) {
 
 var result = _.sortBy(list, iteratee);
 */
-<<<<<<< HEAD
-var a = {
-	mode : "1",
-	name: "liujia"
-}
-
-var test = {
-	mode : "1",
-	name: "liujia",
-	age: "33"
-}
-
-var func = _.matches(a)(test);
-=======
-
 
 var _keys = function(obj) {
 	var keys = [];
@@ -289,4 +274,3 @@ var flatten = function(array) {
 	}
 	return result;
 }
->>>>>>> 67fcdf0825bce6f549e7d60c14effb3f01cd4332
